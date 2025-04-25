@@ -42,9 +42,18 @@ if [ -n "$CYGWIN_PREFIX" ] ; then
 
     # And we need to add the search path that lets libtool find the
     # msys2 stub libraries for ws2_32.
-    platlibs=$(cd $(dirname $($CC --print-prog-name=ld))/../sysroot/usr/lib && pwd -W)
-    test -f $platlibs/libws2_32.a || { echo "error locating libws2_32" ; exit 1 ; }
-    export LDFLAGS="$LDFLAGS -L$platlibs"
+        # Look in standard mingw-w64 library locations
+    for lib_path in "$BUILD_PREFIX_M/Library/mingw-w64/bin" "$BUILD_PREFIX_M/Library/bin" "$mprefix/Library/mingw-w64/lib" "$mprefix/Library/lib"; do
+        if [ -d "$lib_path" ]; then
+            # Convert to Windows path
+            win_path=$(cygpath -w "$lib_path")
+            echo "Adding path to library search: $win_path"
+            export PATH="$PATH:$win_path"
+            export LIBRARY_PATH="$LIBRARY_PATH:$win_path"
+            # For ld
+            export LDFLAGS="$LDFLAGS -L$win_path"
+        fi
+    done
 else
     # Get an updated config.sub and config.guess
     cp $BUILD_PREFIX/share/gnuconfig/config.* .
