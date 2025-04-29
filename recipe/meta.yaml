@@ -32,12 +32,12 @@ requirements:
     - make                         # [unix]
     - m2-make                      # [win]
     - {{ compiler("c") }}          # [unix]
-    - {{ compiler("ucrt64_c") }}   # [win]
+    - {{ compiler("m2w64_c") }}    # [win]
     - autoconf                     # [unix]
     - automake                     # [unix]
     - gettext                      # [unix]
     - libtool                      # [unix]
-    - libwinpthread                # [win]
+    - winpthread                   # [win]
   host:
     - xorg-xorgproto
     - xorg-util-macros
