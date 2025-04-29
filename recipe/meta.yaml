@@ -47,6 +47,10 @@ test:
     {% for lib_ident in lib_idents %}
     - test -f $PREFIX/lib/lib{{ lib_ident }}.dylib  # [osx]
     - test -f $PREFIX/lib/lib{{ lib_ident }}.so     # [linux]
+    - if not exist %LIBRARY_BIN%/msys-{{ lib_ident }}-1.dll exit /b 1    # [win]
+    - if not exist %LIBRARY_INC%/X11/{{ lib_ident }}.h exit /b 1         # [win]
+    - if not exist %LIBRARY_LIB%/lib{{ lib_ident }}.dll.a exit /b 1      # [win]
+    - if not exist %LIBRARY_LIB%/pkgconfig/{{ lib_ident }}.pc exit /b 1  # [win]
     {% endfor %}
 
 about:
