@@ -1,7 +1,5 @@
 :: Delegate to the Unixy script. We need to translate the key path variables
 :: to be Unix-y rather than Windows-y, though.
-:: Set CYGWIN_PREFIX to trigger Windows-specific section in build.sh
-set "CYGWIN_PREFIX=1"
 set "saved_recipe_dir=%RECIPE_DIR%"
 FOR /F "delims=" %%i IN ('cygpath.exe -u -p "%PATH%"') DO set "PATH_OVERRIDE=%%i"
 FOR /F "delims=" %%i IN ('cygpath.exe -m "%BUILD_PREFIX%"') DO set "BUILD_PREFIX_M=%%i"
