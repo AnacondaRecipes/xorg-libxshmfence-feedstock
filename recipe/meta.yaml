@@ -51,6 +51,8 @@ test:
 
 about:
   home: https://www.x.org/
+  dev_url: https://gitlab.freedesktop.org/xorg/lib/libxshmfence
+  doc_url: https://gitlab.freedesktop.org/xorg/lib/libxshmfence
   license: MIT
   license_family: MIT
   license_file: COPYING
