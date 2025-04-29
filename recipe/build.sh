@@ -29,7 +29,6 @@ configure_args=(
 
 # On Windows we need to regenerate the configure scripts.
 if [ -n "$CYGWIN_PREFIX" ] ; then
-    am_version=1.16 # keep sync'ed with meta.yaml
     export ACLOCAL=aclocal-$am_version
     export AUTOMAKE=automake-$am_version
     autoreconf_args=(
@@ -40,11 +39,42 @@ if [ -n "$CYGWIN_PREFIX" ] ; then
     )
     autoreconf "${autoreconf_args[@]}"
 
+    export CC="gcc"
+    
     # And we need to add the search path that lets libtool find the
     # msys2 stub libraries for ws2_32.
-    platlibs=$(cd $(dirname $($CC --print-prog-name=ld))/../sysroot/usr/lib && pwd -W)
-    test -f $platlibs/libws2_32.a || { echo "error locating libws2_32" ; exit 1 ; }
-    export LDFLAGS="$LDFLAGS -L$platlibs"
+    # Find MSYS2 libraries directory using a more reliable approach
+    platlibs=""
+    for potential_path in \
+        "$(dirname $($CC --print-prog-name=ld))/../sysroot/usr/lib" \
+        "$(dirname $($CC --print-prog-name=ld))/../x86_64-w64-mingw32/lib" \
+        "$BUILD_PREFIX_M/Library/mingw-w64/lib" \
+        "$BUILD_PREFIX_M/Library/usr/lib" \
+        "$BUILD_PREFIX_M/Library/x86_64-w64-mingw32/sysroot/usr/lib"; do
+        if [ -f "$(cygpath -u "$potential_path")/libws2_32.a" ]; then
+            platlibs=$(cygpath -u "$potential_path")
+            break
+        fi
+    done
+
+    # Check for winpthread in standard locations
+    for lib in libwinpthread libpthread_win32 libpthread; do
+        if [ -f "$BUILD_PREFIX_M/Library/lib/${lib}.a" ] || [ -f "$BUILD_PREFIX_M/Library/lib/${lib}.dll.a" ]; then
+        export PTHREAD_LIBS="-l${lib#lib}"
+        break
+        fi
+    done
+    
+    # Override pthread flags for Windows
+    export LDFLAGS="$LDFLAGS $PTHREAD_LIBS"
+    # Patch configuration if needed
+    sed -i 's/-lpthread/'"$PTHREAD_LIBS"'/g' configure || true
+    
+    if [ -f "$platlibs/libws2_32.a" ]; then
+        export LDFLAGS="$LDFLAGS -L$platlibs"
+    else
+        echo "Warning: Could not find libws2_32.a"
+    fi
 else
     # Get an updated config.sub and config.guess
     cp $BUILD_PREFIX/share/gnuconfig/config.* .
