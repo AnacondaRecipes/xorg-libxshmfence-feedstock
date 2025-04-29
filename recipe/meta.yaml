@@ -32,7 +32,7 @@ requirements:
     - make                         # [unix]
     - m2-make                      # [win]
     - {{ compiler("c") }}          # [unix]
-    - {{ compiler("m2w64_c") }}    # [win]
+    - {{ compiler("ucrt64_c") }}   # [win]
     - autoconf                     # [unix]
     - automake                     # [unix]
     - gettext                      # [unix]
