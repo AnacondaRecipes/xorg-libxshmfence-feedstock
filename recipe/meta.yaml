@@ -43,6 +43,7 @@ requirements:
 
 test:
   commands:
+    - echo on  # [win]
     {% set lib_idents = [ "xshmfence" ] %}
     {% for lib_ident in lib_idents %}
     - test -f $PREFIX/lib/lib{{ lib_ident }}.dylib  # [osx]
