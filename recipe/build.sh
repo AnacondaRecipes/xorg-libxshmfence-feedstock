@@ -39,7 +39,7 @@ if [ -n "$CYGWIN_PREFIX" ] ; then
     )
     autoreconf "${autoreconf_args[@]}"
 
-    export CC="cl"
+    export CC="gcc"
     
     # And we need to add the search path that lets libtool find the
     # msys2 stub libraries for ws2_32.
