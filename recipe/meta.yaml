@@ -37,7 +37,7 @@ requirements:
     - automake                     # [unix]
     - gettext                      # [unix]
     - libtool                      # [unix]
-    - winpthreads                   # [win]
+    - m2w64-libwinpthread-git                   # [win]
   host:
     - xorg-xorgproto
     - xorg-util-macros
