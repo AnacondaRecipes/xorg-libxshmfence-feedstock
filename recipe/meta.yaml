@@ -38,6 +38,7 @@ requirements:
     - gettext                      # [unix]
     - libtool                      # [unix]
   host:
+    - pthread-stubs
     - xorg-xorgproto
     - xorg-util-macros
 
