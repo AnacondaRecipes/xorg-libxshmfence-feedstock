@@ -57,19 +57,6 @@ if [ -n "$CYGWIN_PREFIX" ] ; then
         fi
     done
 
-    # Check for winpthread in standard locations
-    for lib in libwinpthread libpthread_win32 libpthread; do
-        if [ -f "$BUILD_PREFIX_M/Library/lib/${lib}.a" ] || [ -f "$BUILD_PREFIX_M/Library/lib/${lib}.dll.a" ]; then
-        export PTHREAD_LIBS="-l${lib#lib}"
-        break
-        fi
-    done
-    
-    # Override pthread flags for Windows
-    export LDFLAGS="$LDFLAGS $PTHREAD_LIBS"
-    # Patch configuration if needed
-    sed -i 's/-lpthread/'"$PTHREAD_LIBS"'/g' configure || true
-    
     if [ -f "$platlibs/libws2_32.a" ]; then
         export LDFLAGS="$LDFLAGS -L$platlibs"
     else
