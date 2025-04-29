@@ -49,18 +49,18 @@ if [ -n "$CYGWIN_PREFIX" ] ; then
         "$(dirname $($CC --print-prog-name=ld))/../sysroot/usr/lib" \
         "$(dirname $($CC --print-prog-name=ld))/../x86_64-w64-mingw32/lib" \
         "$BUILD_PREFIX_M/Library/mingw-w64/lib" \
-        "$BUILD_PREFIX_M/Library/usr/lib"; do
+        "$BUILD_PREFIX_M/Library/usr/lib" \
+        "$BUILD_PREFIX_M/Library/x86_64-w64-mingw32/sysroot/usr/lib"; do
         if [ -f "$(cygpath -u "$potential_path")/libws2_32.a" ]; then
             platlibs=$(cygpath -u "$potential_path")
             break
         fi
     done
 
-    if [ -z "$platlibs" ]; then
-        echo "Error: Could not locate libws2_32.a in any of the expected locations"
-        # Continue anyway instead of failing, as it might work without it
-    else
+    if [ -f "$platlibs/libws2_32.a" ]; then
         export LDFLAGS="$LDFLAGS -L$platlibs"
+    else
+        echo "Warning: Could not find libws2_32.a"
     fi
 else
     # Get an updated config.sub and config.guess
