@@ -17,6 +17,12 @@ source:
 
 build:
   number: 0
+  # The library requires -lpthread to build DLLs on Windows:
+  # Warning: linker path does not have real file for library -lpthread. 
+  # conda-forge relies on libwinpthread from another package https://github.com/conda-forge/winpthreads-feedstock 
+  # and it has the ucrt64 toolchain which was included into {{ stdlib("m2w64_c") }} but it's not available on the main channel.
+  # Mixing mingw64 and ucrt64 toolchains causes clashes.
+  skip: true  # [win] 
   run_exports:
     - {{ pin_subpackage(name|lower) }}
 
@@ -37,14 +43,9 @@ requirements:
     - automake                     # [unix]
     - gettext                      # [unix]
     - libtool                      # [unix]
-    - m2w64-libwinpthread-git      # [win]
-    - m2w64-gcc-libs-core          # [win]
   host:
     - xorg-xorgproto
     - xorg-util-macros
-  run:
-    - m2w64-libwinpthread-git      # [win]
-    - m2w64-gcc-libs-core          # [win]
 
 test:
   commands:
